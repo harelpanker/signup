@@ -7,18 +7,21 @@ import Button from './Button';
 import QuestionHead from './QuestionHead';
 import { AiFillCheckCircle } from 'react-icons/ai';
 
-type Q1Props = { option_1?: string; option_2?: string; checkbox?: [] };
+type Q1Props = { checkbox?: [] };
 
 const STEP = 2;
 
 const Q1: FC<Q1Props> = () => {
+  // state
   const [check, setCheck] = useState(false);
   const [, setStep] = useStore.step();
   const [, setVal] = useStore.userData.where_do_you_experience_pain();
 
+  // form
   const {
     handleSubmit,
     register,
+    watch,
     formState: { isDirty, isValid },
   } = useForm<Q1Props>({ mode: 'onChange', defaultValues: { checkbox: [] } });
 
@@ -26,8 +29,16 @@ const Q1: FC<Q1Props> = () => {
     setVal(data.checkbox?.map((checkbox) => checkbox).join(', '));
   };
 
+  // functions
   const moveStep = () => setStep(STEP);
 
+  const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCheck((check) => !check);
+    console.log(event.target);
+    // console.log(watch());
+  };
+
+  // list
   const optionList = [
     { id: 1, value: 'Head (headache, jaw, face)' },
     { id: 2, value: 'Neck' },
@@ -48,21 +59,24 @@ const Q1: FC<Q1Props> = () => {
           {optionList.map((option) => (
             <li key={option.id}>
               <label
-                className={`${
-                  check ? 'bg-[#eeeefd]' : 'bg-white'
-                } relative transition duration-300 flex cursor-pointer items-center space-x-2 px-3 py-3 min-h-[40px] h-full rounded-lg border border-linPurple w-full`}>
-                <div className='relative w-4 h-4 rounded-full bg-[#E8E9F2] overflow-hidden'>
+                className={`relative transition duration-300 flex cursor-pointer items-center space-x-2 px-3 py-3 min-h-[40px] h-full rounded-lg border border-linPurple w-full`}>
+                <div className='relative w-4 h-4 rounded-full overflow-hidden'>
                   <input
                     {...register('checkbox')}
                     type='checkbox'
                     value={option.value}
-                    className='ring-0 w-full h-full opacity-0 absolute z-10'
+                    className='ring-0 w-full rounded-full border-none ring-transparent h-full checked:bg-linPurple checked:hover:bg-linPurple checked:focus:bg-linPurple bg-[#eeeefd] absolute z-10'
+                    // onChange={onChangeHandler}
                   />
                   {check ? (
-                    <AiFillCheckCircle className='absolute z-20 rounded-full inset-0 w-full h-full text-linPurple' />
+                    <AiFillCheckCircle
+                      className={`${
+                        check ? 'opacity-100' : 'opacity-0'
+                      } absolute z-20 rounded-full inset-0 w-full h-full text-linPurple`}
+                    />
                   ) : null}
                 </div>
-                <span className=''>{option.value}</span>
+                <span className='text-sm'>{option.value}</span>
               </label>
             </li>
           ))}
