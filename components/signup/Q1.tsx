@@ -34,7 +34,7 @@ const Q1: FC<Q1Props> = () => {
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCheck((check) => !check);
-    console.log(event.target);
+    // console.log(event.target);
     // console.log(watch());
   };
 
